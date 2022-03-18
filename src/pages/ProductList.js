@@ -1,23 +1,48 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Button, Icon, Menu, Table } from "semantic-ui-react";
-import ProductService from '../services/productService'
-import { useDispatch } from "react-redux";
-import {addToCart} from '../store/actions/cartActions'
+import { Button, Icon, Menu, Select, Table } from "semantic-ui-react";
+import ProductService from "../services/productService";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../store/actions/cartActions";
 import { toast } from "react-toastify";
+import Pagination from "../layouts/Pagination";
+import {
+  changePage,
+  changeTotelPage,
+} from "../store/actions/paginationActions";
 
 export default function ProductList() {
-  const dispatch=useDispatch();
-  const [products, setProducts] = useState([])
-  useEffect(()=>{
-    let productService=new ProductService();
-    productService.getProducts().then(result=>setProducts(result.data.data),[]);
-  })
+  const dispatch = useDispatch();
+  const [products, setProducts] = useState([]);
 
-  const handleAddToCart=(product)=>{
+  const selectedCategory = useSelector(
+    (state) => state.category.selectedCategory
+  );
+  const paginationState = useSelector((state) => state.pagination);
+
+
+  const begin=(paginationState.selectedPage-1)*(paginationState.range);
+  const last=begin+paginationState.range;
+
+  useEffect(() => {
+    let productService = new ProductService();
+    productService
+      .getProducts()
+      .then((result) => setProducts(result.data.data), []);
+  });
+
+  const result = products.filter(
+    (p) =>
+      p.category.categoryName === selectedCategory || selectedCategory === ""
+  );
+  dispatch(
+    changeTotelPage(parseInt(result.length / paginationState.range, 10) + 1)
+  );
+
+  const handleAddToCart = (product) => {
     dispatch(addToCart(product));
-    toast.success(`${product.productName} Sepete Eklendi`)
-  }
+    toast.success(`${product.productName} Sepete Eklendi`);
+  };
 
   return (
     <div>
@@ -35,38 +60,31 @@ export default function ProductList() {
         </Table.Header>
 
         <Table.Body>
-          {products.map((product,index) => (
-            <Table.Row key={product.id}>
-              <Table.Cell>{index+1}</Table.Cell>
-              <Table.Cell><Link to={`/products/${product.id}`}>{product.productName}</Link></Table.Cell>
-              <Table.Cell>{product.unitPrice}</Table.Cell>
-              <Table.Cell>{product.unitsInStock}</Table.Cell>
-              <Table.Cell>{product.quantityPerUnit}</Table.Cell>
-              <Table.Cell>{product.category.categoryName}</Table.Cell>
-              <Table.Cell><Button onClick={()=>handleAddToCart(product)}>Sepete Ekle</Button></Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body> 
-
-        <Table.Footer>
-          <Table.Row>
-            <Table.HeaderCell colSpan="3">
-              <Menu floated="right" pagination>
-                <Menu.Item as="a" icon>
-                  <Icon name="chevron left" />
-                </Menu.Item>
-                <Menu.Item as="a">1</Menu.Item>
-                <Menu.Item as="a">2</Menu.Item>
-                <Menu.Item as="a">3</Menu.Item>
-                <Menu.Item as="a">4</Menu.Item>
-                <Menu.Item as="a" icon>
-                  <Icon name="chevron right" />
-                </Menu.Item>
-              </Menu>
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Footer>
+          {result.map((product, index) =>
+            (product.category.categoryName === selectedCategory ||
+              selectedCategory === "") && (index<last && index>begin-1)  ? (
+              <Table.Row key={product.id}>
+                <Table.Cell>{index + 1}</Table.Cell>
+                <Table.Cell>
+                  <Link to={`/products/${product.id}`}>
+                    {product.productName}
+                  </Link>
+                </Table.Cell>
+                <Table.Cell>{product.unitPrice}</Table.Cell>
+                <Table.Cell>{product.unitsInStock}</Table.Cell>
+                <Table.Cell>{product.quantityPerUnit}</Table.Cell>
+                <Table.Cell>{product.category.categoryName}</Table.Cell>
+                <Table.Cell>
+                  <Button onClick={() => handleAddToCart(product)}>
+                    Sepete Ekle
+                  </Button>
+                </Table.Cell>
+              </Table.Row>
+            ) : null
+          )}
+        </Table.Body>
       </Table>
+      <Pagination />
     </div>
   );
 }

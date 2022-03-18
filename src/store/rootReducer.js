@@ -1,9 +1,13 @@
 import { combineReducers } from "redux";
 import cartReducer from "./reducers/cartReducer";
+import categoryReducer from './reducers/categoryReducer'
+import paginationReducer from "./reducers/paginationReducer";
 
 
 const rootReducer=combineReducers({
-    cart : cartReducer
+    cart : cartReducer,
+    category:categoryReducer,
+    pagination:paginationReducer
 })
 
 
