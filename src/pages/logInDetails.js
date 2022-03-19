@@ -7,15 +7,16 @@ import { toast } from "react-toastify";
 import AuthService from "../services/authService";
 import { useNavigate } from "react-router";
 
-export default function logInDetails() {
-    const navigate=new useNavigate();
+
+export default function LogInDetails() {
+    const navigate=useNavigate();
     const initialValues = { userName: "",password:""};
     const authService=new AuthService();
     const schema = Yup.object({
       userName: Yup.string().required("Kullanıcı Adı Girmek Zorunludur"),
       password: Yup.string().required("Şifre Girmek Zorunludur"),
     });
-  
+   
     return (
       <div>
         <Formik
@@ -26,6 +27,7 @@ export default function logInDetails() {
              authService.login(user).then(response=>{
                 localStorage.setItem("token",response.data);
                 navigate("/home");
+                window.location.reload();
              }).catch(err=>{
                  toast.error("Kullanıcı adı veya şifre hatalıdır")
              });

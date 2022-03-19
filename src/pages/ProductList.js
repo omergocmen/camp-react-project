@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Button, Icon, Menu, Select, Table } from "semantic-ui-react";
+import { Button,  Table } from "semantic-ui-react";
 import ProductService from "../services/productService";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../store/actions/cartActions";
@@ -19,7 +19,6 @@ export default function ProductList() {
     (state) => state.category.selectedCategory
   );
   const paginationState = useSelector((state) => state.pagination);
-
 
   const begin=(paginationState.selectedPage-1)*(paginationState.range);
   const last=begin+paginationState.range;

@@ -1,12 +1,13 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Button, Menu } from 'semantic-ui-react'
 
-export default function SignedOut(props) {
+export default function SignedOut() {
   return (
     <div>
         <Menu.Item>
-        <Button onClick={props.signIn} primary>Giriş Yap</Button>
-        <Button primary style={{marginLeft:'0.5rem'}}>Kayıt Ol</Button>
+        <Link to="/logIn">Giriş Yap</Link>
+        <Link to="/signIn" style={{marginLeft:'0.5rem'}}>Kayıt Ol</Link>
         </Menu.Item>
     </div>
   )

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeCategory } from "../store/actions/categoryActions";
 import { changePage } from "../store/actions/paginationActions";
 
+
 export default function Categories() {
   const selectedCategory = useSelector(
     (state) => state.category.selectedCategory
@@ -20,6 +21,7 @@ export default function Categories() {
       .getCategories()
       .then((result) => setCategories(result.data.data), []);
   });
+
 
   const change = (category) => {
     dispatch(changeCategory(category));

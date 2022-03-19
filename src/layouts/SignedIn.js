@@ -1,7 +1,19 @@
 import React from 'react'
+import { useNavigate } from 'react-router';
 import { Dropdown, Image, Menu } from 'semantic-ui-react'
 
-export default function SignedIn(props) {
+
+
+
+
+export default function SignedIn() {
+  const navigate=useNavigate();
+  const signedOut=()=>{
+    localStorage.clear();
+    navigate("/login");
+    window.location.reload();
+  }
+
   return (
     <div>
         <Menu.Item>
@@ -9,7 +21,7 @@ export default function SignedIn(props) {
             <Dropdown pointing="top left" text='Ömer'>
                 <Dropdown.Menu>
                     <Dropdown.Item text="Bilgilerim" icon="info"/>
-                    <Dropdown.Item onClick={props.signOut} text="Çıkış Yap" icon="sign-out"/>
+                    <Dropdown.Item onClick={()=>signedOut()}  text="Çıkış Yap" icon="sign-out"/>
                 </Dropdown.Menu>
             </Dropdown>
         </Menu.Item>
